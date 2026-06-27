@@ -78,7 +78,7 @@ export default function Tickets() {
                   <div className="mt-2 sm:flex sm:justify-between">
                     <div className="sm:flex">
                       <p className="flex items-center text-sm text-gray-500">
-                        Requested by {ticket.requester.name}
+                        Requested by {ticket.requester?.name || 'Unknown'}
                       </p>
                     </div>
                     <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">

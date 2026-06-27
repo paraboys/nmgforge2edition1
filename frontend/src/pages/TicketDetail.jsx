@@ -91,7 +91,7 @@ export default function TicketDetail() {
               {ticket.subject}
             </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              Reported by {ticket.requester.name} on {new Date(ticket.created_at).toLocaleString()}
+              Reported by {ticket.requester?.name || 'Unknown'} on {new Date(ticket.created_at).toLocaleString()}
             </p>
           </div>
             <div className="flex space-x-2 text-sm uppercase items-center">
