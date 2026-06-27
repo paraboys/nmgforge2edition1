@@ -12,12 +12,12 @@ services:
       - key: APP_DEBUG
         value: false
       - key: APP_URL
-        generateValue: true
+        value: https://pulsedesk-backend-38f6.onrender.com
       - key: APP_KEY
         generateValue: true
       - key: DB_CONNECTION
         value: sqlite
       - key: SANCTUM_STATEFUL_DOMAINS
-        value: "*.vercel.app"
+        value: "nmgforge2edition1.vercel.app"
       - key: SESSION_DOMAIN
         value: ""
