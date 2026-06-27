@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Forge 2 · Edition 1 — Main Hackathon (Private Handbook)</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Private builder handbook for the in-person Forge 2 · Edition 1 hackathon — orchestrate Hermes + OpenClaw over Slack to ship a multi-tenant SaaS in one day, on EastRouter models." />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='12' fill='%23FF0000'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{--ink:#1a1a1f;--card:#242428;--elev:#2c2c32;--line:#3a3a42;--paper:#f8f7f4;--mute:#c8c5be;--red:#FF0000;--green:#22c55e;--amber:#f59e0b;--blue:#60a5fa}
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--ink);color:var(--paper);font-family:'Inter',sans-serif;line-height:1.65;overflow-x:hidden}
+  .display{font-family:'Montserrat',sans-serif;font-weight:800;letter-spacing:-0.02em;line-height:1.08}
+  .mono{font-family:'JetBrains Mono',monospace}
+  .accent-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--red);z-index:60}
+  .wrap{max-width:960px;margin:0 auto;padding:0 22px}
+  header.hero{padding:64px 0 30px;border-bottom:1px solid var(--line);background:radial-gradient(900px 360px at 18% -10%, rgba(255,0,0,0.12), transparent 60%)}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.18em;color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .reddot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(255,0,0,.6)}
+  h1{font-size:clamp(30px,5.6vw,54px);margin:0 0 14px}
+  h2{font-family:'Montserrat',sans-serif;font-weight:700;font-size:clamp(22px,3.4vw,30px);margin:0 0 6px;letter-spacing:-0.01em}
+  h3{font-family:'Montserrat',sans-serif;font-weight:600;font-size:19px;margin:26px 0 8px;color:var(--paper)}
+  h4{font-size:15px;margin:18px 0 6px;color:var(--paper);font-weight:600}
+  p{color:#e7e4dd;margin:0 0 14px}
+  .lead{font-size:18px;color:var(--mute);max-width:800px}
+  section{padding:42px 0;border-bottom:1px solid var(--line)}
+  .secnum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--red);letter-spacing:0.16em;text-transform:uppercase;display:block;margin-bottom:8px}
+  a{color:#7fb0ff}
+  code{font-family:'JetBrains Mono',monospace;font-size:13px;background:#15151a;border:1px solid var(--line);border-radius:5px;padding:1px 6px;color:#ffd9d0}
+  pre{background:#121217;border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:10px 0 16px}
+  pre code{background:none;border:none;padding:0;color:#d7e6ff;font-size:12.5px;line-height:1.6;white-space:pre}
+  ul,ol{color:#e7e4dd;padding-left:22px;margin:6px 0 16px}
+  li{margin:5px 0}
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;max-width:100%;border-collapse:collapse;margin:14px 0 18px;font-size:14px}
+  td code,th code{word-break:break-word}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:var(--elev);font-family:'JetBrains Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:var(--mute)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:16px 0}
+  .callout{border-left:3px solid var(--red);background:rgba(255,0,0,0.05);border-radius:0 10px 10px 0;padding:14px 18px;margin:16px 0}
+  .ok{border-left-color:var(--green);background:rgba(34,197,94,0.07)}
+  .warn{border-left-color:var(--amber);background:rgba(245,158,11,0.08)}
+  .info{border-left-color:var(--blue);background:rgba(96,165,250,0.08)}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mute);margin:2px 4px 2px 0}
+  .pill.free{border-color:var(--green);color:#86efac}
+  .pill.red{border-color:var(--red);color:#fca5a5}
+  .tier{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10.5px;font-weight:600;padding:2px 9px;border-radius:6px;letter-spacing:.06em;text-transform:uppercase;margin-right:8px;vertical-align:middle}
+  .tier.must{background:rgba(255,0,0,.14);color:#fca5a5;border:1px solid rgba(255,0,0,.4)}
+  .tier.should{background:rgba(245,158,11,.14);color:#fde68a;border:1px solid rgba(245,158,11,.4)}
+  .tier.stretch{background:rgba(96,165,250,.14);color:#bfdbfe;border:1px solid rgba(96,165,250,.4)}
+  .check{list-style:none;padding-left:0}
+  .check li{padding-left:28px;position:relative}
+  .check li::before{content:'\2610';position:absolute;left:0;color:var(--red);font-size:15px}
+  .btn{display:inline-block;background:var(--red);color:#fff;font-weight:600;text-decoration:none;border-radius:9px;padding:14px 26px;margin:8px 0;font-size:16px;border:none;cursor:pointer}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--paper)}
+  .toc{columns:2;column-gap:28px;font-size:14px}
+  .toc a{display:block;color:var(--mute);text-decoration:none;padding:3px 0}
+  .toc a:hover{color:var(--paper)}
+  .ph{background:rgba(245,158,11,0.16);border:1px dashed var(--amber);border-radius:5px;padding:0 6px;color:#fde68a;font-family:'JetBrains Mono',monospace;font-size:12px}
+  .timer{display:flex;gap:14px;flex-wrap:wrap;margin:18px 0 4px}
+  .timer .seg{background:#121217;border:1px solid var(--line);border-radius:10px;padding:10px 16px;text-align:center;min-width:78px}
+  .timer .seg b{font-family:'JetBrains Mono',monospace;font-size:26px;color:var(--paper);display:block;line-height:1.1}
+  .timer .seg span{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.1em}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.toc{columns:1}.grid2{grid-template-columns:1fr}}
+  footer{padding:40px 0 70px;color:var(--mute);font-size:13px}
+  /* anti-copy: block selection on content, but KEEP form fields fully usable (type + paste) */
+  body{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text!important;-moz-user-select:text!important;-ms-user-select:text!important;user-select:text!important;-webkit-touch-callout:default}
+  /* gate */
+  #fc-gate{position:fixed;inset:0;z-index:9999;background:linear-gradient(180deg,#121217,#1a1a1f);overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:40px 18px}
+  #fc-gate *{box-sizing:border-box}
+  .fcg-card{max-width:620px;width:100%;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:34px 30px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+  .fcg-eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--red);display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .fcg-dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 12px rgba(255,0,0,.6)}
+  .fcg-h{font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(24px,4.4vw,34px);margin:0 0 12px;color:var(--paper);letter-spacing:-.02em}
+  .fcg-p{color:var(--mute);font-size:15px;line-height:1.6;margin:0 0 20px}
+  .fcg-socials{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:22px}
+  @media(max-width:480px){.fcg-socials{grid-template-columns:1fr}}
+  .fcg-soc{display:flex;align-items:center;justify-content:space-between;gap:10px;background:#15151a;border:1px solid var(--line);border-radius:11px;padding:14px 16px;color:var(--paper);font:600 15px 'Inter',sans-serif;cursor:pointer;transition:border-color .15s,background .15s}
+  .fcg-soc:hover{border-color:var(--paper)}
+  .fcg-soc.done{border-color:#22c55e;background:rgba(34,197,94,.08)}
+  .fcg-soc-go{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mute)}
+  .fcg-soc.done .fcg-soc-go{color:#86efac}
+  .fcg-btn{display:block;width:100%;background:var(--red);color:#fff;font-weight:600;border:none;border-radius:10px;padding:15px;font-size:16px;cursor:pointer}
+  .fcg-btn:disabled{opacity:.5;cursor:default}
+  .fcg-mini{font-size:12px;color:var(--mute);margin:14px 0 0;line-height:1.5}
+  .fcg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+  @media(max-width:480px){.fcg-grid{grid-template-columns:1fr}}
+  .fcg-field{width:100%;background:#15151a;border:1px solid var(--line);border-radius:9px;padding:12px 13px;color:var(--paper);font:14px 'Inter',sans-serif}
+  .fcg-field:focus{outline:none;border-color:var(--red)}
+  .fcg-check{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--mute);line-height:1.5;margin:4px 0 18px;cursor:pointer}
+  .fcg-msg{margin-top:14px;font-size:14px;display:none}
+  .fcg-msg.err{display:block;color:#fca5a5}
+  .fcg-link{background:none;border:none;color:#7fb0ff;text-decoration:underline;cursor:pointer;font:inherit;padding:0}
+  /* submit form */
+  .hs-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.hs-grid{grid-template-columns:1fr}}
+  .hs-full{grid-column:1/-1}
+  .hs-l{display:block;font-size:13px;font-weight:600;color:var(--paper);margin:0 0 6px}
+  .hs-f{width:100%;background:#15151a;border:1px solid var(--line);border-radius:8px;padding:11px 13px;color:var(--paper);font:14px 'Inter',sans-serif}
+  .hs-f:focus{outline:none;border-color:var(--red)}
+  textarea.hs-f{resize:vertical;min-height:70px}
+  #hs-msg{margin-top:12px;font-size:14px;color:#fca5a5;display:none}
+</style>
+</head>
+<body>
+<div class="accent-bar"></div>
+
+<!-- ===== FOLLOW-GATE (unlocks the handbook) ===== -->
+<div id="fc-gate" role="dialog" aria-modal="true" aria-label="Unlock the Forge 2 main hackathon handbook">
+  <div class="fcg-card">
+    <div class="fcg-eyebrow"><span class="fcg-dot"></span>Forge 2 &middot; Edition 1 &middot; Main Hackathon &middot; In-person</div>
+    <div id="fcg-step-follow">
+      <h2 class="fcg-h">Lock in. Then we build.</h2>
+      <p class="fcg-p">Forge is a builder community first. Follow <strong style="color:var(--paper)">nmg.labs</strong> on all four &mdash; tap each, give us a follow, then come back. The full hackathon handbook + submission link unlocks once all four are done.</p>
+      <div class="fcg-socials" id="fcg-socials"></div>
+      <button class="fcg-btn" id="fcg-continue" disabled>Follow all four to continue</button>
+      <p class="fcg-mini">Tapping opens the profile in a new tab. This is the private in-person handbook &mdash; please don&#39;t share the link outside the cohort.</p>
+    </div>
+    <div id="fcg-step-form" style="display:none;">
+      <h2 class="fcg-h">You&#39;re in. Check in.</h2>
+      <p class="fcg-p">Check in as an official <strong style="color:var(--paper)">Forge 2 &middot; Edition 1</strong> in-person builder, then the handbook opens.</p>
+      <form id="fcg-form">
+        <div class="fcg-grid">
+          <input class="fcg-field" id="fcg-name" required placeholder="Full name *" autocomplete="name" />
+          <input class="fcg-field" id="fcg-email" type="email" required placeholder="Email *" autocomplete="email" />
+          <input class="fcg-field" id="fcg-mobile" type="tel" placeholder="WhatsApp / phone" />
+          <input class="fcg-field" id="fcg-github" placeholder="GitHub username" />
+        </div>
+        <label class="fcg-check"><input type="checkbox" id="fcg-confirm" required style="margin-top:3px" /><span>I followed nmg.labs on Instagram, X, LinkedIn and Facebook, and I&#39;m checking in to the Forge 2 &middot; Edition 1 in-person hackathon.</span></label>
+        <button class="fcg-btn" id="fcg-submit" type="submit">Open the handbook &rarr;</button>
+        <div class="fcg-msg" id="fcg-msg"></div>
+      </form>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  var KEY='forge2_main_started_v1';
+  var gate=document.getElementById('fc-gate'); if(!gate) return;
+  if(localStorage.getItem(KEY)==='1'){ gate.parentNode.removeChild(gate); return; }
+  document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden';
+  var SOCIALS=[
+    {k:'instagram',label:'Instagram',url:'https://www.instagram.com/nmg_labs/'},
+    {k:'x',label:'X (Twitter)',url:'https://x.com/nmg_labs'},
+    {k:'linkedin',label:'LinkedIn',url:'https://www.linkedin.com/company/nmglabs/about/'},
+    {k:'facebook',label:'Facebook',url:'https://www.facebook.com/people/NMG-Labs/61590919792752/'}
+  ];
+  var done={};
+  var host=document.getElementById('fcg-socials');
+  host.innerHTML=SOCIALS.map(function(s){return '<button type="button" class="fcg-soc" data-k="'+s.k+'"><span>'+s.label+'</span><span class="fcg-soc-go">Follow &rarr;</span></button>';}).join('');
+  var cont=document.getElementById('fcg-continue');
+  function refresh(){var n=Object.keys(done).length;var all=n===SOCIALS.length;cont.disabled=!all;cont.textContent=all?'Continue →':('Follow all four to continue ('+n+'/4)');}
+  Array.prototype.forEach.call(host.querySelectorAll('.fcg-soc'),function(btn){btn.addEventListener('click',function(){var k=btn.getAttribute('data-k');var s=null;for(var i=0;i<SOCIALS.length;i++){if(SOCIALS[i].k===k)s=SOCIALS[i];}window.open(s.url,'_blank','noopener');done[k]=true;btn.classList.add('done');btn.querySelector('.fcg-soc-go').textContent='✓ Followed';refresh();});});
+  refresh();
+  cont.addEventListener('click',function(){if(cont.disabled)return;document.getElementById('fcg-step-follow').style.display='none';document.getElementById('fcg-step-form').style.display='block';});
+  var SUPA='https://kixladtnhbwcyvsvsqtc.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpeGxhZHRuaGJ3Y3l2c3ZzcXRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMTA0NzMsImV4cCI6MjA5NjY4NjQ3M30.dUFBaxUNH-gZw6WQUoUggpNRi_0jcI4XSUHVCtx51cg';
+  var HH={apikey:ANON,Authorization:'Bearer '+ANON};
+  function unlock(){try{localStorage.setItem(KEY,'1');}catch(e){}document.documentElement.style.overflow='';document.body.style.overflow='';gate.parentNode.removeChild(gate);}
+  document.getElementById('fcg-form').addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=document.getElementById('fcg-submit'),msg=document.getElementById('fcg-msg'),lbl=btn.textContent;
+    btn.disabled=true;btn.textContent='Opening…';msg.className='fcg-msg';
+    var row={name:(document.getElementById('fcg-name').value||'').trim()||null,email:((document.getElementById('fcg-email').value||'').trim().toLowerCase())||null,mobile:(document.getElementById('fcg-mobile').value||'').trim()||null,github:(document.getElementById('fcg-github').value||'').trim()||null,sprint_choice:'Forge 2 · Edition 1 Main Hackathon — CHECKED IN',source:'forge-2-main-checkin',raw:{kind:'forge2-main-checkin',socials_followed:['instagram','x','linkedin','facebook'],checked_in_at:new Date().toISOString()}};
+    fetch(SUPA+'/rest/v1/registrations',{method:'POST',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=minimal'},HH),body:JSON.stringify(row)})
+      .then(function(res){if(res.status!==201)throw new Error('HTTP '+res.status);unlock();})
+      .catch(function(){msg.className='fcg-msg err';msg.innerHTML='Could not save right now. <button type="button" id="fcg-retry" class="fcg-link">Try again</button> or <button type="button" id="fcg-skip" class="fcg-link">continue anyway</button>.';btn.disabled=false;btn.textContent=lbl;document.getElementById('fcg-skip').onclick=unlock;document.getElementById('fcg-retry').onclick=function(){document.getElementById('fcg-form').requestSubmit();};});
+  });
+})();
+</script>
+<!-- ===== /FOLLOW-GATE ===== -->
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow"><span class="reddot"></span>Private handbook · do not share publicly · nmg.labs</div>
+    <h1 class="display">Forge 2 · Edition 1 — The Main Hackathon</h1>
+    <p class="lead">This is show time. One builder, one day, two AI agents. You will run <strong style="color:var(--paper)">Hermes (the orchestrator / product owner)</strong> and <strong style="color:var(--paper)">OpenClaw (the coder)</strong> over Slack — agile, with bots — and ship a real <strong style="color:var(--paper)">multi-tenant SaaS</strong> in a single focused day. You don&#39;t write the features by hand. You <em>direct the agents that do</em>.</p>
+    <p><span class="pill">In-person · solo</span><span class="pill">10:30 AM → 6:00 PM IST</span><span class="pill free">$50 EastRouter credits</span><span class="pill">Stack: Laravel + MySQL + React</span><span class="pill red">Agile · Hermes × OpenClaw</span></p>
+    <div id="timer-wrap" class="card" style="margin-top:18px">
+      <div class="mono" style="font-size:12px;color:var(--mute);letter-spacing:.1em;text-transform:uppercase" id="timer-label">Build window · 10:30 AM – 6:00 PM IST</div>
+      <div class="timer" id="timer"></div>
+      <div class="mono" style="font-size:12px;color:var(--mute);margin-top:8px" id="timer-note">Keep an eye on the clock — but submissions stay open even after 6:00 PM. Late = reviewed at the organizers&#39; discretion. Quality &amp; process over a frantic finish.</div>
+    </div>
+  </div>
+</header>
+
+<main>
+<section id="vibe" style="padding:30px 0">
+  <div class="wrap">
+    <span class="secnum">♪ Press play · build mode</span>
+    <h2 style="margin-bottom:8px">The Forge 2 · Edition 1 playlist</h2>
+    <p style="margin-bottom:14px">Queue it up, get your agents talking, and lock in for the day.</p>
+    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/4rDemQdxCE2dnoZdJSK2Vs?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Forge 2 Edition 1 playlist"></iframe>
+  </div>
+</section>
+<section id="toc-sec">
+  <div class="wrap">
+    <span class="secnum">Contents</span>
+    <h2>Everything you need — read it all once before you start.</h2>
+    <nav class="toc">
+      <a href="#mission">00 · The mission &amp; the method (agile with bots)</a>
+      <a href="#format">01 · Format, timeline &amp; what you submit</a>
+      <a href="#eastrouter">02 · EastRouter — your $50 of models</a>
+      <a href="#brief">03 · The build — PulseDesk (problem statement)</a>
+      <a href="#stack">04 · The required stack</a>
+      <a href="#workflow">05 · The agile AI-agent workflow</a>
+      <a href="#repo">06 · Exact Git repo structure</a>
+      <a href="#evidence">07 · Evidence you must keep</a>
+      <a href="#judging">08 · How you&#39;ll be judged (full rubric)</a>
+      <a href="#rules">09 · Rules &amp; restrictions</a>
+      <a href="#faq">10 · FAQ — every doubt, pre-answered</a>
+      <a href="#submit">11 · Submit your build</a>
+    </nav>
+  </div>
+</section>
+
+<section id="mission">
+  <div class="wrap">
+    <span class="secnum">00 · The mission &amp; the method</span>
+    <h2>Don&#39;t write the app. Orchestrate the agents that write it.</h2>
+    <p>In the qualifier you proved you could <em>set up</em> Hermes + OpenClaw and ship a tiny build. Today is the real thing: you run a proper <strong>agile sprint cycle with AI agents</strong> and ship a non-trivial, multi-tenant SaaS in a day.</p>
+    <p>The method we want you to practise is exactly how modern AI-native teams ship — <strong>&ldquo;agile, with bots.&rdquo;</strong> Here&#39;s the loop in one breath:</p>
+    <div class="card">
+      <p class="mono" style="color:var(--paper);font-size:13.5px;line-height:1.9;margin:0">
+        spec &nbsp;→&nbsp; tight sprint (a few scoped issues) &nbsp;→&nbsp; <span style="color:#fca5a5">Hermes</span> plans &amp; assigns in Slack &nbsp;→&nbsp; <span style="color:#bfdbfe">OpenClaw</span> codes + tests + reports &nbsp;→&nbsp; CI runs &nbsp;→&nbsp; <span style="color:#fde68a">you (human)</span> review &amp; merge the PR &nbsp;→&nbsp; next sprint.
+      </p>
+    </div>
+    <p>The principles we&#39;re grading you on (straight from how a real AI-native shop runs this):</p>
+    <ul>
+      <li><strong>Keep sprints tight and focused.</strong> Small, well-scoped sprints beat one giant &ldquo;build everything&rdquo; prompt every time. A bloated sprint produces slop.</li>
+      <li><strong>Two roles, in the open.</strong> Hermes is the <em>product owner / orchestrator</em>. OpenClaw is the <em>coder</em>. They never talk privately — every handoff happens in Slack so a human (you) stays in the loop.</li>
+      <li><strong>Right model for the right job.</strong> Use a stronger reasoning model for planning/architecture and a fast coding model for implementation (see EastRouter §02). Cluster your tasks by difficulty.</li>
+      <li><strong>Humans merge to <code>main</code>.</strong> Agents open PRs; <em>you</em> review and merge release candidates. No bot auto-merges to <code>main</code> — bots are great at scope creep, so you gate it.</li>
+      <li><strong>Stay consistent.</strong> Once an agent config works, don&#39;t keep &ldquo;upgrading&rdquo; it mid-event — it creates chaos. Lock it, branch a new config if you must experiment.</li>
+    </ul>
+    <div class="callout info"><strong>What we are really testing:</strong> not &ldquo;can you write a SaaS&rdquo; — but <em>can you make two agents collaborate, under your direction, to produce working software with a clean process and a clear audit trail.</em> A smaller app with a flawless, well-evidenced agent loop beats a bigger app with no visible orchestration.</div>
+  </div>
+</section>
+
+<section id="format">
+  <div class="wrap">
+    <span class="secnum">01 · Format &amp; timeline</span>
+    <h2>One builder. One day. One shipped product.</h2>
+    <table>
+      <tr><th>Thing</th><th>Detail</th></tr>
+      <tr><td>Who</td><td><strong>Solo.</strong> Your own work, built live during the event. No teams, no pre-written feature code.</td></tr>
+      <tr><td>When</td><td><strong>10:30 AM → 6:00 PM IST</strong> (one day). A live countdown is at the top of this page.</td></tr>
+      <tr><td>Start clean</td><td>Create a <strong>fresh, empty repo</strong> at the start (an empty Laravel + React scaffold is fine — features start at zero). Don&#39;t bring a pre-built app.</td></tr>
+      <tr><td>Models</td><td><strong>$50 of EastRouter credits</strong> (see §02). All agent model calls go through EastRouter.</td></tr>
+      <tr><td>Build</td><td>The <strong>PulseDesk</strong> multi-tenant SaaS (§03), in the required stack (§04), via the agile AI-agent workflow (§05).</td></tr>
+      <tr><td>Submit</td><td>One submission: GitHub repo + (optional) live URL + evidence. Form at the bottom (§11). <strong>Submissions don&#39;t auto-close at 6 PM</strong> — but the clock is real; finish your loop and submit.</td></tr>
+    </table>
+    <div class="callout warn"><strong>Pace yourself like a sprinter, not a marathoner.</strong> Suggested rhythm: 30 min spec &amp; agent setup → 3–4 tight sprints of ~75–90 min each → leave the last 45 min for a final CI pass, the README, your evidence, and submission. Don&#39;t start a brand-new sprint after ~5:00 PM — land what you have clean.</div>
+  </div>
+</section>
+
+<section id="eastrouter">
+  <div class="wrap">
+    <span class="secnum">02 · EastRouter — your $50 of models</span>
+    <h2>One endpoint. Frontier models. $50 on us.</h2>
+    <p><a href="https://eastrouter.com">EastRouter</a> is an OpenAI- &amp; OpenRouter-compatible gateway to East-Asian frontier models — GLM 5.1, Kimi K2.6, MiniMax M2.7, DeepSeek V4 and more. Both <strong>OpenClaw</strong> and <strong>Hermes</strong> work with it natively. You get <strong>$50 of credit</strong> for today.</p>
+    <h3>Step 1 — Get your account &amp; claim your $50</h3>
+    <ol>
+      <li>Go to <a href="https://dashboard.eastrouter.com/">dashboard.eastrouter.com</a> and <strong>sign up with Google or GitHub</strong>. (A $10 trial activates immediately — no card.)</li>
+      <li><strong>Share the email / handle you registered with</strong> to your Forge captain (in person or in the Forge Slack). They&#39;ll top your account up to <strong>$50</strong>.</li>
+      <li>In the dashboard, create an <strong>API key</strong> — it looks like <code>sk-er_&lt;id&gt;_&lt;secret&gt;</code>. Treat it like a password.</li>
+      <li>Check your balance anytime: <code>GET https://api.eastrouter.com/v1/balance</code> with your key.</li>
+    </ol>
+    <h3>Step 2 — Point your agents at EastRouter</h3>
+    <table>
+      <tr><th>Client</th><th>Base URL</th></tr>
+      <tr><td>OpenAI SDK / Hermes / OpenAI-mode tools</td><td><code>https://api.eastrouter.com/v1</code></td></tr>
+      <tr><td>Claude-compatible (OpenClaw Anthropic mode / Claude Code)</td><td><code>https://api.eastrouter.com/api/anthropic</code></td></tr>
+    </table>
+    <h4>OpenClaw (the coder) — Anthropic-compatible mode (recommended)</h4>
+    <pre><code># in OpenClaw's environment / config
+export ANTHROPIC_BASE_URL="https://api.eastrouter.com/api/anthropic"
+export ANTHROPIC_AUTH_TOKEN="sk-er_...your_key..."
+# then run OpenClaw and select a model id, e.g. z-ai/glm-5.1</code></pre>
+    <h4>OpenClaw — OpenAI-compatible mode (alternative)</h4>
+    <pre><code>base_url = "https://api.eastrouter.com/v1"
+api_key  = "sk-er_...your_key..."
+model    = "z-ai/glm-5.1"</code></pre>
+    <h4>Hermes (the orchestrator) — add EastRouter as an OpenAI-compatible provider</h4>
+    <pre><code>provider:  eastrouter
+base_url:  https://api.eastrouter.com/v1
+api_key:   sk-er_...your_key...
+model:     deepseek/deepseek-v4-pro   # strong reasoning for planning/PO
+# (drop to z-ai/glm-5.1 for faster planning if you prefer)</code></pre>
+    <h3>Step 3 — Pick the right model for the job (model segmentation)</h3>
+    <table>
+      <tr><th>Model ID</th><th>Best for</th><th>Context</th></tr>
+      <tr><td><code>z-ai/glm-5.1</code></td><td><strong>Recommended default.</strong> Strong all-round coding + planning</td><td>200K</td></tr>
+      <tr><td><code>deepseek/deepseek-v4-pro</code></td><td>Heavy reasoning — architecture, sprint planning, cross-dependency calls (Hermes)</td><td>1M</td></tr>
+      <tr><td><code>moonshotai/kimi-k2.6</code></td><td>Long-horizon coding tasks (OpenClaw)</td><td>262K</td></tr>
+      <tr><td><code>minimax/minimax-m2.7</code></td><td>Agentic / tool-heavy workflows</td><td>197K</td></tr>
+      <tr><td><code>z-ai/glm-4.6</code> · <code>z-ai/glm-4.5-air</code> · <code>deepseek/deepseek-v4-flash</code></td><td>Cheap, fast iterations — use these to save credit on routine edits</td><td>128K–1M</td></tr>
+    </table>
+    <div class="callout ok"><strong>Budget tip:</strong> $50 is plenty for a full day <em>if you keep sprints tight</em>. Plan/architect with a strong model (DeepSeek V4 / GLM 5.1), do the bulk of coding on GLM 5.1, and drop to GLM 4.5 Air / DeepSeek V4 Flash for small repetitive edits. Watch <code>/v1/balance</code>. Streaming + tool-calling are supported on GLM, Kimi and MiniMax.</div>
+    <div class="callout warn"><strong>All model usage must go through EastRouter</strong> for this event (that&#39;s what the credits are for, and it keeps judging fair). Don&#39;t mix in other paid APIs. Local Ollama is allowed <em>only</em> as a fallback if EastRouter is unreachable — note it in your README if you use it.</div>
+  </div>
+</section>
+
+<section id="brief">
+  <div class="wrap">
+    <span class="secnum">03 · The build</span>
+    <h2>PulseDesk — a multi-tenant support-desk SaaS.</h2>
+    <p>Build <strong>PulseDesk</strong>: a hosted help-desk / support-ticketing product that multiple companies (tenants) use to manage customer support. Think a focused mini-Zendesk. It&#39;s deliberately chosen because it has real depth (multi-tenancy, roles, SLAs, metrics) <em>and</em> decomposes cleanly into tight sprints.</p>
+    <p>Features are tiered. <span class="tier must">Must</span> = the core you should land. <span class="tier should">Should</span> = depth that lifts you. <span class="tier stretch">Stretch</span> = wow. You are <strong>not</strong> expected to finish everything — get the Must tier solid, then go as deep as your sprints allow.</p>
+
+    <h3><span class="tier must">Must</span> Core — land these first</h3>
+    <ul>
+      <li><strong>Multi-tenancy.</strong> Organizations (tenants). Every record belongs to an org; a user from Org A can <em>never</em> see Org B&#39;s data. (Scope every query by <code>organization_id</code>.)</li>
+      <li><strong>Auth &amp; roles</strong> (Laravel Sanctum). Register / login. Roles: <code>admin</code>, <code>agent</code>, <code>customer</code>.</li>
+      <li><strong>Tickets CRUD.</strong> Fields: subject, description, status (<code>open / pending / resolved / closed</code>), priority (<code>low / medium / high / urgent</code>), requester (customer), assignee (agent), tags/labels, created/updated timestamps.</li>
+      <li><strong>Ticket conversation.</strong> Threaded replies on a ticket — a public reply (visible to the customer) and an internal note (agents only).</li>
+      <li><strong>List + filters + search.</strong> A ticket list/board filterable by status, priority and assignee, with text search on subject/body.</li>
+      <li><strong>REST API + React frontend.</strong> A documented JSON API consumed by your React app (no server-rendered-only shortcuts for the core flows).</li>
+      <li><strong>Seeded demo data.</strong> A seeder that creates 1 org, an admin, 2 agents, 2 customers and ~12 tickets so a judge sees a populated app instantly.</li>
+    </ul>
+
+    <h3><span class="tier should">Should</span> Depth — where good builds pull ahead</h3>
+    <ul>
+      <li><strong>SLA policies &amp; timers.</strong> Per-priority response &amp; resolution targets; a live &ldquo;time remaining / breached&rdquo; indicator on each ticket.</li>
+      <li><strong>Queues &amp; assignment.</strong> &ldquo;Unassigned&rdquo;, &ldquo;My tickets&rdquo;, reassignment; an agent can claim a ticket.</li>
+      <li><strong>Activity log / audit trail</strong> per ticket (status change, assignment, replies) with who + when.</li>
+      <li><strong>Dashboard metrics.</strong> Open by status/priority, avg first-response time, SLA-breach rate, tickets created per day.</li>
+      <li><strong>Notifications.</strong> An in-app notification centre (or a logged/webhook notification) when a ticket is assigned or replied to.</li>
+    </ul>
+
+    <h3><span class="tier stretch">Stretch</span> Wow — only if your sprints are flying</h3>
+    <ul>
+      <li>Canned responses / macros · ticket merge · CSAT rating after resolution.</li>
+      <li>A separate customer portal view · bulk actions · a public, rate-limited &ldquo;submit a ticket&rdquo; API.</li>
+      <li>Real-time updates (polling or websockets) · full-text search · CSV export.</li>
+    </ul>
+    <div class="callout"><strong>This is the brief — build PulseDesk, not something else.</strong> Building a different app is the single most common way to get disqualified. If a feature is ambiguous, make a sensible call, write it in your README, and move on.</div>
+  </div>
+</section>
+
+<section id="stack">
+  <div class="wrap">
+    <span class="secnum">04 · The required stack</span>
+    <h2>Same family you trained on — so judging is fair and fast.</h2>
+    <table>
+      <tr><th>Layer</th><th>Required</th></tr>
+      <tr><td>Language</td><td><strong>PHP 8.2+</strong></td></tr>
+      <tr><td>Backend</td><td><strong>Laravel 11</strong> (REST API). Auth via <strong>Laravel Sanctum</strong>.</td></tr>
+      <tr><td>Database</td><td><strong>MySQL 8</strong> (use migrations + seeders; no SQLite for the final build).</td></tr>
+      <tr><td>Frontend</td><td><strong>React 19 + Vite</strong>, styled with <strong>Tailwind</strong>. (Blade is fine for auth scaffolding, but the app UI is React.)</td></tr>
+      <tr><td>Tests</td><td>Pest or PHPUnit feature tests on the API (at least the core ticket + tenancy flows).</td></tr>
+      <tr><td>CI</td><td>A GitHub Actions workflow that installs, migrates and runs tests on each PR.</td></tr>
+    </table>
+    <p>Libraries, scaffolding and component kits are <strong>allowed and encouraged</strong> — Laravel and React are themselves scaffolds. What must be <em>agent-built</em> is the <strong>PulseDesk features</strong> (models, API, UI, logic), not boilerplate.</p>
+    <div class="callout info"><strong>Why a fixed stack?</strong> So every build clones, migrates and runs the same way, and judges compare like-for-like. It also matches what you practised in the qualifier, so no surprises today.</div>
+  </div>
+</section>
+
+<section id="workflow">
+  <div class="wrap">
+    <span class="secnum">05 · The agile AI-agent workflow</span>
+    <h2>This is the heart of the event. Get this right.</h2>
+    <h3>Your agents — 2 required, more earn bonus</h3>
+    <p>The core is the <strong>Hermes + OpenClaw</strong> pair. You are <em>not</em> limited to two — adding a reviewer or a CI/deploy agent is how real AI-native teams actually run, and it earns bonus marks (§08). But quality beats quantity: a tight 2-agent loop scores higher than a sloppy 4-agent one.</p>
+    <table>
+      <tr><th>Agent</th><th>Required?</th><th>Role</th></tr>
+      <tr><td><strong>Hermes</strong></td><td><span class="pill red">Required</span></td><td>Orchestrator / Product Owner — turns the spec into a sprint backlog &amp; scoped issues, assigns work, reviews reports, keeps memory, runs a cron heartbeat.</td></tr>
+      <tr><td><strong>OpenClaw (coder)</strong></td><td><span class="pill red">Required</span></td><td>The primary coder &amp; <strong>workhorse of the event</strong> — implements each assigned issue, runs code + tests, opens a PR, reports in Slack (<em>What I Did / What&#39;s Left / What Needs Your Call</em>). <strong>Its config is weighted heavily — get it right.</strong></td></tr>
+      <tr><td><strong>OpenClaw #2 — reviewer / QA</strong></td><td><span class="pill free">Bonus</span></td><td>A second OpenClaw that <em>reviews the coder&#39;s PRs</em>, runs the tests, and posts problems back before you merge — the &ldquo;error → decompose → fix&rdquo; loop.</td></tr>
+      <tr><td><strong>CI / deploy agent</strong></td><td><span class="pill free">Bonus</span></td><td>A Hermes or OpenClaw dedicated to the stack: runs CI, reports to <code>#ci-cd</code>, handles deploy. (Eean&#39;s &ldquo;stack agent.&rdquo;)</td></tr>
+    </table>
+
+    <h3>Your OpenClaw config must be tight — it&#39;s weighted heavily</h3>
+    <p>OpenClaw is the workhorse, and a half-configured coder is the single most common failure. Your committed <code>agents/openclaw/openclaw.json</code> must contain (secrets redacted to <code>${ENV}</code>):</p>
+    <table>
+      <tr><th>Must include</th><th>Why we check it</th></tr>
+      <tr><td><strong>Model</strong> — EastRouter <code>base_url</code> (<code>…/v1</code> or <code>…/api/anthropic</code>), <code>api_key: ${EASTROUTER_API_KEY}</code>, real coding <code>model</code> (e.g. <code>z-ai/glm-5.1</code>)</td><td>Proves the coder runs on EastRouter credit + a valid model — not a stub.</td></tr>
+      <tr><td><strong>Slack</strong> — enabled; app + bot tokens via env; channels <code>#agent-coder</code>, <code>#agent-log</code>, <code>#ci-cd</code></td><td>Proves it&#39;s wired into the loop, not run silently in a terminal.</td></tr>
+      <tr><td><strong>Workspace</strong> — working dir + command execution enabled</td><td>Proves it can actually write &amp; run code/tests (not just chat).</td></tr>
+      <tr><td><strong>Skills / tools</strong> — any tools or custom skill you gave it</td><td>Shows real capability config, not defaults.</td></tr>
+    </table>
+    <div class="callout warn"><strong>Prove the model is actually used.</strong> Known OpenClaw gotcha (issue #7211): a model can be <em>configured but silently not used</em>. Commit a log or screenshot showing your EastRouter model id being hit <em>while OpenClaw answers</em> — a config file alone is not proof, and we score the proof.</div>
+
+    <h3>Your Hermes config</h3>
+    <p>Your committed <code>agents/hermes/hermes-config.yaml</code> must show: provider <code>eastrouter</code> + base URL + a planning model (e.g. <code>deepseek/deepseek-v4-pro</code> or <code>z-ai/glm-5.1</code>), <strong>memory enabled</strong>, and its Slack channels (<code>#sprint-main</code>, <code>#agent-coder</code>, <code>#human-review</code>).</p>
+    <h3>Required Slack channels (everything in the open)</h3>
+    <table>
+      <tr><th>Channel</th><th>Purpose</th></tr>
+      <tr><td><code>#sprint-main</code></td><td>You ↔ Hermes. Spec, sprint planning, decisions, status.</td></tr>
+      <tr><td><code>#agent-coder</code></td><td>Hermes ↔ OpenClaw. Task handoffs &amp; clarifications.</td></tr>
+      <tr><td><code>#agent-log</code></td><td>OpenClaw&#39;s structured reports (What I Did / Left / Needs Your Call).</td></tr>
+      <tr><td><code>#ci-cd</code></td><td>Build / test / CI results (paste or pipe them here).</td></tr>
+      <tr><td><code>#human-review</code></td><td>Release-candidate approvals — where <em>you</em> sign off before merge.</td></tr>
+    </table>
+    <h3>The sprint loop you must run (≥ 2 sprints)</h3>
+    <ol>
+      <li><strong>Spec → backlog.</strong> Tell Hermes the goal; have it produce a sprint backlog of small issues <em>before any code is written</em>. Save it to <code>sprints/sprint-0N.md</code>.</li>
+      <li><strong>Assign.</strong> Hermes hands a scoped issue to OpenClaw in <code>#agent-coder</code>.</li>
+      <li><strong>Build + report.</strong> OpenClaw implements, runs tests, opens a PR, and posts its report to <code>#agent-log</code>.</li>
+      <li><strong>CI.</strong> GitHub Actions runs on the PR; results land in <code>#ci-cd</code>.</li>
+      <li><strong>Human review &amp; merge.</strong> You review the PR in <code>#human-review</code> and <strong>merge it yourself</strong>. No bot merges to <code>main</code>.</li>
+      <li><strong>Repeat</strong> with the next tight sprint. Aim for 3–4 small sprints rather than 1 big one.</li>
+    </ol>
+    <div class="callout"><strong>Minimum bar:</strong> at least <strong>2 real sprints</strong>, each with a saved sprint doc, a genuine Hermes→OpenClaw handoff in Slack, a PR you merged, and OpenClaw reports in <code>#agent-log</code>. More tight sprints = a stronger process score.</div>
+    <div class="callout warn"><strong>Human-in-the-loop is mandatory.</strong> Agents must communicate through Slack channels, not silently. You merge to <code>main</code>. If you let a bot run unsupervised straight to <code>main</code>, you lose the entire process score.</div>
+  </div>
+</section>
+
+<section id="repo">
+  <div class="wrap">
+    <span class="secnum">06 · Exact Git repo structure</span>
+    <h2>Put it exactly here — so judging is fast and fair.</h2>
+    <p>Name your repo <code>forge2-&lt;yourname&gt;</code>, make it <strong>public</strong>, and match this layout exactly. <strong>Everything — code, configs, logs, Slack proof, screenshots — is committed here. No external links.</strong> Anything a judge can&#39;t find in the repo, they can&#39;t credit.</p>
+    <div class="callout ok"><strong>⬇ Don&#39;t build the folders by hand — download the starter skeleton.</strong> It&#39;s the exact structure below with ready-to-fill templates (README, ARCHITECTURE, SUBMISSION checklist, agent-log, sprint docs, redacted agent configs, CI workflow, <code>.env.example</code>s, evidence folders). <strong>Structure only — zero app features.</strong><br><a class="btn" href="forge2-pulsedesk-starter-kit.zip" download style="margin-top:10px">Download the PulseDesk starter kit (.zip) →</a><br><span class="mono" style="font-size:12px;color:var(--mute)">Unzip → rename to <code>forge2-&lt;yourname&gt;</code> → <code>git init</code> → then point your agents at it and start sprint 1.</span></div>
+    <pre><code>forge2-&lt;yourname&gt;/
+├─ README.md                 # what it is · stack · EXACT run steps · live URL (if any) · models used
+├─ ARCHITECTURE.md           # data model · API routes · multi-tenancy approach · key decisions
+├─ SUBMISSION.md             # the submission checklist, ticked, with in-repo paths
+├─ agent-log.md              # the human→Hermes→OpenClaw loop, in order (real, not templated)
+├─ backend/                            # Laravel 11 + MySQL
+│  ├─ app/Models/                      # Organization, User, Ticket, Comment, SlaPolicy, ActivityLog…
+│  ├─ app/Http/Controllers/Api/
+│  ├─ app/Policies/                    # tenant + role authorization
+│  ├─ database/migrations/
+│  ├─ database/seeders/                # 1 org, admin, 2 agents, 2 customers, ~12 tickets
+│  ├─ routes/api.php
+│  ├─ tests/                           # Pest/PHPUnit feature tests (tickets + tenancy isolation)
+│  └─ .env.example                     # MySQL + EASTROUTER_API_KEY placeholders (NO real secrets)
+├─ frontend/                           # React 19 + Vite + Tailwind
+│  ├─ src/
+│  └─ .env.example                     # VITE_API_URL
+├─ agents/
+│  ├─ hermes/hermes-config.yaml        # REAL Hermes config (provider=eastrouter, model) — secrets redacted
+│  ├─ openclaw/openclaw.json           # REAL OpenClaw config (base_url, model, slack) — secrets redacted
+│  └─ skills/                          # any custom skill
+├─ sprints/
+│  ├─ sprint-01.md                     # goal + issue list + outcome
+│  ├─ sprint-02.md                     # (≥2 sprints — one file each)
+│  └─ …
+├─ slack-export/                       # REAL unzipped Slack export (per-channel JSON folders)…
+│  └─ screenshots/                     # …OR per-channel screenshots if export isn't available:
+│                                      #   sprint-main-01.png · agent-coder-01.png · agent-log-01.png
+│                                      #   · ci-cd-01.png · human-review-01.png
+├─ evidence/
+│  └─ screenshots/                     # app + agents-running + CI screenshots — NN-what-it-is.png
+│                                      #   e.g. 01-ticket-list.png · 02-ticket-detail.png
+│                                      #   03-dashboard.png · 04-openclaw-gateway.png · 05-ci-green.png
+├─ .github/workflows/ci.yml           # CI: composer install · migrate · run tests
+└─ (no video, no Google Drive — every artifact is committed in this repo)
+</code></pre>
+    <h3>Evidence map — exactly what goes where</h3>
+    <table>
+      <tr><th>Artifact</th><th>Exact location in repo</th><th>Required?</th></tr>
+      <tr><td>Hermes config (real, secrets redacted)</td><td><code>agents/hermes/hermes-config.yaml</code></td><td>Yes</td></tr>
+      <tr><td>OpenClaw config (real, secrets redacted)</td><td><code>agents/openclaw/openclaw.json</code></td><td>Yes</td></tr>
+      <tr><td>The agent loop (your→Hermes→OpenClaw)</td><td><code>agent-log.md</code></td><td>Yes</td></tr>
+      <tr><td>Sprint docs (≥2)</td><td><code>sprints/sprint-0N.md</code></td><td>Yes</td></tr>
+      <tr><td>Slack proof</td><td><code>slack-export/</code> (export) <em>or</em> <code>slack-export/screenshots/</code> (per channel)</td><td>Yes</td></tr>
+      <tr><td>App + agents-running + CI screenshots</td><td><code>evidence/screenshots/</code></td><td>Yes</td></tr>
+      <tr><td>CI workflow</td><td><code>.github/workflows/ci.yml</code> + green run on Actions tab</td><td>Yes</td></tr>
+      <tr><td>Demo video</td><td>—</td><td><strong>None — no video this year</strong> (live in-person demo instead)</td></tr>
+    </table>
+    <div class="callout warn"><strong>Never commit real secrets.</strong> Commit <code>.env.example</code> with placeholders, not your real <code>.env</code> or your <code>sk-er_</code> key. Redact tokens in your agent configs to <code>${ENV_VAR}</code>. Leaked keys = a deduction (and someone will spend your credit).</div>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="wrap">
+    <span class="secnum">07 · Evidence — all of it lives in your Git repo</span>
+    <h2>Everything goes in the repo. No Drive, no video links, no exceptions.</h2>
+    <div class="callout warn"><strong>Read this carefully — it&#39;s new and it&#39;s strict.</strong> This year <strong>every artifact must be committed to your Git repository</strong>: screenshots, Slack export, agent configs, logs, sprint docs — all of it. We will <strong>not</strong> open Google Drive, YouTube, Loom, or any external link for evidence. <strong>There is no video.</strong> If something isn&#39;t in the repo (or its screenshot isn&#39;t committed), it does not count. This keeps judging fair, fast and permanent — and it&#39;s the #1 way people lost earned points in the qualifier.</div>
+    <p>Capture as you go and commit to these exact locations:</p>
+
+    <h3>1 · Agent configs → <code>agents/</code></h3>
+    <ul>
+      <li><code>agents/hermes/hermes-config.yaml</code> (or <code>.json</code>) — your <strong>real</strong> Hermes config: provider <code>eastrouter</code>, base URL, model, Slack settings. Redact secrets to <code>${EASTROUTER_API_KEY}</code> / <code>${SLACK_BOT_TOKEN}</code> — never the real values.</li>
+      <li><code>agents/openclaw/openclaw.json</code> — your <strong>real</strong> OpenClaw config: EastRouter base URL, model, Slack channels. Secrets redacted the same way.</li>
+      <li><code>agents/skills/</code> — any custom skill you gave an agent.</li>
+    </ul>
+
+    <h3>2 · The agent loop → <code>agent-log.md</code> (repo root) + <code>sprints/</code></h3>
+    <ul>
+      <li><code>agent-log.md</code> — the real loop in order: your prompt to Hermes → Hermes&#39; plan/assignment → OpenClaw&#39;s report (<em>What I Did / What&#39;s Left / What Needs Your Call</em>). Real text, not a template.</li>
+      <li><code>sprints/sprint-01.md</code>, <code>sprint-02.md</code>, … — one file per sprint: goal, issue list, what shipped, what slipped.</li>
+    </ul>
+
+    <h3>3 · Slack proof → <code>slack-export/</code> (read this fully)</h3>
+    <p>Your Slack is the audit trail of your agent loop — it&#39;s how we verify the work is real. Provide it one of two ways (<strong>both is best</strong>), committed in the repo:</p>
+    <h4>Option A — real Slack export (preferred)</h4>
+    <ol>
+      <li>In Slack: <em>Workspace name ▸ Tools &amp; settings ▸ Workspace settings ▸ Import/Export Data ▸ Export</em>.</li>
+      <li>Choose date range <strong>&ldquo;Entire history&rdquo;</strong> and <strong>Start export</strong>. (On the Free plan a workspace owner can export <strong>all public channels</strong> — that&#39;s exactly our five, so make your channels public.)</li>
+      <li>Download the <code>.zip</code> when ready, <strong>unzip it, and commit the unzipped contents into <code>slack-export/</code></strong>.</li>
+      <li>The export contains <code>channels.json</code>, <code>users.json</code>, and a folder per channel with dated <code>.json</code> message files — exactly what we cross-check against your git &amp; CI timeline.</li>
+    </ol>
+    <h4>Option B — per-channel screenshots (if export is locked on your plan)</h4>
+    <p>Commit clear screenshots to <code>slack-export/screenshots/</code>, <strong>one set per channel</strong>, named by channel: <code>sprint-main-01.png</code>, <code>agent-coder-01.png</code>, <code>agent-log-01.png</code>, <code>ci-cd-01.png</code>, <code>human-review-01.png</code>. Each must show <strong>real agent messages</strong> with visible content + timestamps — not just a &ldquo;bot joined the channel&rdquo; line.</p>
+    <h4>What each channel must actually show</h4>
+    <table>
+      <tr><th>Channel</th><th>Must contain</th></tr>
+      <tr><td><code>#sprint-main</code></td><td>You giving Hermes a sprint goal; Hermes posting the plan/backlog back.</td></tr>
+      <tr><td><code>#agent-coder</code></td><td>Hermes assigning a scoped issue to OpenClaw (the handoff).</td></tr>
+      <tr><td><code>#agent-log</code></td><td>OpenClaw&#39;s real reports — <em>What I Did / What&#39;s Left / What Needs Your Call</em>.</td></tr>
+      <tr><td><code>#ci-cd</code></td><td>Test/CI results for at least one PR.</td></tr>
+      <tr><td><code>#human-review</code></td><td>You approving a release candidate before you merged it.</td></tr>
+    </table>
+    <div class="callout info"><strong>How judges use your Slack export:</strong> we build three independent timelines — your <strong>Slack messages</strong>, your <strong>git/PR history</strong>, and your <strong>CI runs</strong> — and they must line up. Genuine work agrees across all three; fabricated or pasted-after-the-fact logs don&#39;t, and that&#39;s a disqualification. So just let it happen naturally and export it — don&#39;t reconstruct it later.</div>
+
+    <h3>4 · Screenshots → <code>evidence/screenshots/</code></h3>
+    <p>Commit these as PNGs, named <code>NN-what-it-is.png</code> (e.g. <code>01-app-ticket-list.png</code>):</p>
+    <ul>
+      <li><strong>App, working:</strong> ticket list/board · a ticket detail with its conversation · the dashboard/metrics · the login screen.</li>
+      <li><strong>Agents, running:</strong> the OpenClaw gateway in your terminal · Hermes running.</li>
+      <li><strong>Multi-tenancy proof (optional but strong):</strong> the same view logged in as Org A vs Org B showing different data.</li>
+      <li><strong>CI:</strong> a green GitHub Actions run (also visible on your repo&#39;s Actions tab).</li>
+    </ul>
+
+    <h3>5 · History &amp; CI → in the repo itself</h3>
+    <ul>
+      <li>Incremental commits, PRs per issue/sprint, merges done by <strong>you</strong> (we read your git/PR history on GitHub directly).</li>
+      <li><code>.github/workflows/ci.yml</code> committed, with at least one green run on the Actions tab.</li>
+    </ul>
+
+    <div class="callout info"><strong>No video — and that&#39;s on purpose.</strong> Instead of a demo video, your <code>README.md</code> must contain <em>exact</em> run steps, and because the event is in-person, a judge can ask you to <strong>run PulseDesk live</strong> from a fresh clone. That live run + your committed screenshots fully replace any video.</div>
+  </div>
+</section>
+
+<section id="judging">
+  <div class="wrap">
+    <span class="secnum">08 · How you&#39;ll be judged</span>
+    <h2>The full rubric — no surprises.</h2>
+    <p>Every submission is cloned and inspected on real evidence. We weight <strong>the agent process as heavily as the working app</strong> — this is an orchestration event. Score is out of 100.</p>
+    <table>
+      <tr><th>Criterion</th><th>Weight</th><th>What earns full marks</th></tr>
+      <tr><td><strong>Agent orchestration loop</strong> (Hermes↔OpenClaw↔you)</td><td>20</td><td>A genuine, repeated human→Hermes→OpenClaw→report loop across the sprints — the single biggest slice. Real handoffs, real reports, clear role separation, all in Slack.</td></tr>
+      <tr><td><strong>OpenClaw configuration &amp; coder execution</strong></td><td>16</td><td>A <strong>tight, real <code>openclaw.json</code></strong> (EastRouter model + Slack + workspace/command-exec + tools), <em>proven</em> to run on your EastRouter model, that actually wrote &amp; ran the code. This is weighted heavily — OpenClaw is the workhorse.</td></tr>
+      <tr><td><strong>App works end-to-end</strong></td><td>14</td><td>PulseDesk actually runs (fresh clone or live URL): Must tier solid, Should/Stretch add depth. We click through real flows.</td></tr>
+      <tr><td><strong>Multi-tenant isolation</strong> <span class="pill red">security-gated</span></td><td>12</td><td>Org A genuinely cannot read/modify Org B&#39;s data; tenant derives from the auth session, not a client id. We run an adversarial cross-tenant probe.</td></tr>
+      <tr><td><strong>Hermes orchestration &amp; PO setup</strong></td><td>10</td><td>Real <code>hermes-config.yaml</code> on a planning model with memory; Hermes genuinely decomposed the spec, planned sprints and assigned work.</td></tr>
+      <tr><td><strong>Sprints → CI/CD → human-merged PRs</strong></td><td>10</td><td>≥2 tight scoped sprints with docs; CI runs on PRs; <em>you</em> are the merge actor, agents are the commit authors; no bot auto-merge to <code>main</code>.</td></tr>
+      <tr><td><strong>Slack workspace + export quality</strong></td><td>6</td><td>All 5 channels used with real agent traffic; a clean, complete Slack export/screenshots committed that cross-checks against git + CI.</td></tr>
+      <tr><td><strong>Code &amp; architecture</strong></td><td>5</td><td>Proper Laravel 11 + MySQL + React; clean REST API; sound data model; passing tests; <code>ARCHITECTURE.md</code> present; no copy-paste sprawl.</td></tr>
+      <tr><td><strong>Repo &amp; docs</strong></td><td>4</td><td>Matches the required layout; clear README run steps; honest SUBMISSION.md; all evidence committed in-repo.</td></tr>
+      <tr><td><strong>Live demo (in-person)</strong></td><td>3</td><td>It runs on demand from a fresh clone (or your live URL) when a judge asks — proving it&#39;s real and yours.</td></tr>
+    </table>
+    <div class="callout ok"><strong>Bonus — up to +5 (capped at 100):</strong> genuine <em>additional</em> agents that really participated in the loop — a second OpenClaw <strong>reviewer/QA</strong> agent (+ up to 3) and/or a <strong>CI/deploy</strong> agent (+ up to 2). They must show real activity in Slack + the repo, not just exist.</div>
+    <h3>Hard gates &amp; caps</h3>
+    <ul>
+      <li><strong>DQ:</strong> no public/clonable repo · built the wrong thing (not PulseDesk) · <strong>fabricated evidence</strong> (your Slack / git / CI timelines contradict each other) · &gt;75% plagiarised or a forked existing app passed off as yours.</li>
+      <li><strong>Capped low</strong> if: no genuine two-agent loop (it&#39;s just hand-coded) · a confirmed cross-tenant data leak · the app is dead / localhost-only / frontend-with-no-backend.</li>
+      <li><strong>Penalty</strong> for model calls not run through EastRouter (other paid keys), unless EastRouter was down and you documented an Ollama fallback.</li>
+      <li>Not the required stack (no Laravel + MySQL backend / no React app UI).</li>
+    </ul>
+    <h3>How we verify (so you know it&#39;s fair)</h3>
+    <p>Judges clone your repo and run <code>migrate --seed</code> + your frontend; read your configs, <code>agent-log.md</code> and sprint docs; open your Slack evidence; and <strong>cross-check three independent timelines — your Slack export, your git/PR history, and your CI runs — which must agree.</strong> We use <strong>server-side GitHub timestamps</strong> (commit dates are forgeable, so they don&#39;t count) and confirm <strong>you</strong> are the PR merge actor. We run an <strong>adversarial multi-tenant probe</strong> (sign in as Org A, try to read Org B). Because it&#39;s in-person, a judge may ask you to <strong>run it live from a fresh clone.</strong> Borderline scores get a second independent review, and the top builds are hand-validated before any winner is announced. You&#39;ll get a transparent written breakdown on the results page, exactly like the qualifier.</p>
+    <div class="callout ok"><strong>The honest path always wins.</strong> A modest app with a real, well-documented agent loop scores far better than an impressive-looking app with no visible orchestration or with faked evidence. Build real, log everything.</div>
+  </div>
+</section>
+
+<section id="rules">
+  <div class="wrap">
+    <span class="secnum">09 · Rules &amp; restrictions</span>
+    <h2>The short, firm list.</h2>
+    <ul>
+      <li><strong>Solo.</strong> Your own work, built during the event window. Helping each other learn is great; sharing code/repos is not.</li>
+      <li><strong>Start fresh.</strong> New repo today. Empty framework scaffolds are fine; pre-built PulseDesk features are not.</li>
+      <li><strong>Required stack</strong> (§04) and <strong>required workflow</strong> (§05) — both are graded, both are required.</li>
+      <li><strong>EastRouter for all model calls</strong> (§02). Keep usage in your account; don&#39;t share keys.</li>
+      <li><strong>Build PulseDesk</strong> (§03) — not a different app.</li>
+      <li><strong>Humans merge to <code>main</code>.</strong> Agents open PRs; you approve.</li>
+      <li><strong>Keep evidence</strong> (§07) and <strong>match the repo layout</strong> (§06).</li>
+      <li><strong>No fabricated evidence.</strong> Honesty about what&#39;s done vs not done is rewarded; faking is disqualifying.</li>
+      <li><strong>Open-source libraries allowed.</strong> Credit anything substantial in your README.</li>
+      <li><strong>Be excellent to each other</strong> and to the space. Code of conduct applies.</li>
+    </ul>
+
+    <h3>Allowed vs not allowed — the complete list</h3>
+    <div class="grid2">
+      <div class="card">
+        <h4 style="color:#86efac;margin-top:0">✓ Allowed</h4>
+        <ul>
+          <li>Framework scaffolds: <code>laravel new</code>, Vite/React scaffold, Breeze/Jetstream for auth, Tailwind/shadcn/UI kits.</li>
+          <li>Any open-source library or package (credit substantial ones in your README).</li>
+          <li>Any editor/IDE (VS Code, JetBrains, etc.) as your <em>personal</em> editor.</li>
+          <li>Switching EastRouter models freely during the day; adding the bonus reviewer/CI agents.</li>
+          <li>Reading docs, Stack Overflow, AI chat to learn / debug.</li>
+          <li>Deploying to any host (bonus); a clean local run is fully accepted too.</li>
+          <li>Resubmitting as many times as you like (latest entry is scored).</li>
+          <li>Asking a Forge captain about <em>logistics</em> (Wi-Fi, credits, timing).</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:#fca5a5;margin-top:0">✕ Not allowed</h4>
+        <ul>
+          <li>Pre-built PulseDesk features, bringing an existing app, or starting before 10:30.</li>
+          <li>Teams or sharing code with another participant — this is <strong>solo</strong>.</li>
+          <li>Building anything other than PulseDesk.</li>
+          <li>Model calls <em>not</em> through EastRouter (other paid keys) — except a documented Ollama fallback if EastRouter is down.</li>
+          <li>Hand-coding the features yourself with no real agent loop (the <em>agents</em> build the features).</li>
+          <li>Bots auto-merging to <code>main</code> — <strong>humans merge</strong>.</li>
+          <li>Fabricated/edited evidence, back-dated commits, forking an existing app as &ldquo;yours,&rdquo; plagiarism.</li>
+          <li>External evidence links (Google Drive, Loom, YouTube) — <strong>everything is committed in the repo</strong>.</li>
+          <li>Committing real secrets / API keys (redact to <code>${ENV}</code>).</li>
+          <li>A private or missing repo at judging time.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout info"><strong>Everything you need is on this page</strong> — rules, stack, workflow, repo layout, evidence, the full rubric, and the FAQ below. Your <strong>code, architecture (<code>ARCHITECTURE.md</code>), screenshots, Slack export and configs all live in your repo</strong>. If something is genuinely unclear, make a sensible call and note it in your README — that judgement is part of the test. The only thing you ever need a human for is the one-time <strong>EastRouter $50 top-up</strong> (share your sign-up handle with a Forge captain).</div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <span class="secnum">10 · FAQ</span>
+    <h2>Every doubt, pre-answered.</h2>
+
+    <h4>Do I have to finish every feature?</h4>
+    <p>No. Land the <span class="tier must">Must</span> tier solidly, then go as deep as your sprints allow. We score how far you got <em>and</em> how cleanly you ran the agent process. A finished Must-tier with a great loop beats a half-broken Stretch attempt.</p>
+
+    <h4>Do I have to deploy it live?</h4>
+    <p>A live URL is a bonus, not a hard gate. What&#39;s required is that your app <strong>actually runs</strong> — either we can run it from a fresh clone using your README steps (<code>composer install</code>, <code>migrate --seed</code>, <code>npm run dev</code>), or you give a working live URL. If you deploy, point your frontend at the deployed API (not <code>localhost</code>).</p>
+
+    <h4>Where do my screenshots, Slack export, and video go?</h4>
+    <p><strong>All inside your Git repo</strong> — nothing external. Configs in <code>agents/</code>, the loop in <code>agent-log.md</code>, sprint docs in <code>sprints/</code>, Slack proof in <code>slack-export/</code> (export) or <code>slack-export/screenshots/</code>, and app/agent/CI screenshots in <code>evidence/screenshots/</code> (see §06–§07 for exact paths). <strong>There is no video this year.</strong> We do <em>not</em> accept Google Drive, Loom, YouTube or any external link — if it isn&#39;t committed to the repo, it isn&#39;t counted. The submission form only asks for your repo URL.</p>
+
+    <h4>Why no video / no Drive this time?</h4>
+    <p>It keeps judging fair, fast and permanent (links rot and sign-in walls cost people points last time), and it&#39;s an in-person event — a judge will just ask you to <strong>run it live</strong>, which beats any recording.</p>
+
+    <h4>How exactly do I get my $50 EastRouter credit?</h4>
+    <p>Sign up at <a href="https://dashboard.eastrouter.com/">dashboard.eastrouter.com</a> with Google or GitHub, then share <em>the email/handle you signed up with</em> to your Forge captain. They top you up to $50. A $10 trial works instantly so you&#39;re never blocked while that happens. (See §02.)</p>
+
+    <h4>Which model should I use?</h4>
+    <p><code>z-ai/glm-5.1</code> is the recommended default for both planning and coding. For heavy architecture/planning, give Hermes <code>deepseek/deepseek-v4-pro</code> (1M context, strong reasoning). For cheap routine edits, drop to <code>z-ai/glm-4.5-air</code> or <code>deepseek/deepseek-v4-flash</code>. Full list in §02.</p>
+
+    <h4>Can I use Claude Code / Codex / Cursor / Cline as the coder instead of OpenClaw?</h4>
+    <p>The event is specifically about the <strong>Hermes (orchestrator) + OpenClaw (coder)</strong> pairing over Slack — that&#39;s what we grade and what your $50 is for. Use other tools only as a personal editor; the graded loop must be Hermes → OpenClaw. (EastRouter does support Claude Code / Codex if you want them as helpers.)</p>
+
+    <h4>What counts as a real &ldquo;agent loop&rdquo;?</h4>
+    <p>A genuine exchange in Slack where <em>you</em> give Hermes a goal, Hermes plans &amp; assigns a scoped task to OpenClaw, OpenClaw implements + reports back, and you review/merge. Real messages, real PRs, real commits — not a single screenshot of &ldquo;bot joined the channel,&rdquo; and not a hand-written log pasted in after the fact.</p>
+
+    <h4>An agent broke / hit a rate limit / produced garbage. What do I do?</h4>
+    <p>That&#39;s normal — handling it <em>is</em> the skill. Re-scope the task smaller, switch to a different EastRouter model, fix the config, and note what happened in <code>agent-log.md</code>. Honest recovery from failure scores <em>better</em> than pretending it went perfectly.</p>
+
+    <h4>Can I use a UI kit / component library / Laravel starter kit?</h4>
+    <p>Yes — scaffolds, Tailwind UI, shadcn-style kits, Breeze/Jetstream for auth, etc. are all fine. The <strong>PulseDesk features</strong> must be built by your agents during the event; boilerplate doesn&#39;t have to be.</p>
+
+    <h4>Do I need MySQL specifically? I used SQLite in the qualifier.</h4>
+    <p>Yes, MySQL 8 for the final build (it&#39;s the spec, and it&#39;s a more realistic multi-tenant DB). Use migrations + seeders so it sets up cleanly.</p>
+
+    <h4>Should my repo be public or private?</h4>
+    <p><strong>Public.</strong> A private/missing repo can&#39;t be cloned and is a hard gate. Make it public before you submit and keep it public until results are out.</p>
+
+    <h4>What if I&#39;m not done at 6:00 PM?</h4>
+    <p>The form doesn&#39;t auto-close, so you can still submit — but the clock is real and late submissions are reviewed at the organizers&#39; discretion. Better to <strong>land a clean, smaller build and submit on time</strong> than to chase a big one past the buzzer.</p>
+
+    <h4>How and when do I find out if I won / how I did?</h4>
+    <p>Same as the qualifier: a results page where you enter your GitHub username and see your status + full, transparent score breakdown and feedback. Watch the Forge Slack / your email.</p>
+
+    <h4>Can I resubmit?</h4>
+    <p>Yes — submit again and we score your latest entry. Use the same GitHub username each time so we can match it.</p>
+
+    <h4>Something here is ambiguous / I have a doubt not covered.</h4>
+    <p>Make a reasonable decision, write it in your README, and keep moving — that judgement is part of the test. For anything blocking, ask a Forge captain in person or in the Forge Slack.</p>
+  </div>
+</section>
+
+<section id="submit">
+  <div class="wrap">
+    <span class="secnum">11 · Submit your build</span>
+    <h2>Ship it. Submit here.</h2>
+    <p>Make your repo <strong>public</strong>, confirm a fresh clone runs (or your live URL opens), tick the <code>SUBMISSION.md</code> checklist, then submit. You can resubmit while the window is open — we score your latest entry.</p>
+    <div class="callout"><strong>Before you submit (all committed in the repo):</strong> repo public · README has exact run steps · <code>migrate --seed</code> works · <code>agents/hermes/</code> + <code>agents/openclaw/</code> configs present · <code>agent-log.md</code> + <code>sprints/</code> present · Slack proof in <code>slack-export/</code> · screenshots in <code>evidence/screenshots/</code> · CI green. No external links.</div>
+    <form id="hs-form" style="margin-top:10px">
+      <div class="hs-grid">
+        <div><label class="hs-l">Full name *</label><input class="hs-f" id="hs-name" required autocomplete="name" placeholder="e.g. Priya Sharma"></div>
+        <div><label class="hs-l">Email *</label><input class="hs-f" id="hs-email" type="email" required autocomplete="email" placeholder="you@college.edu"></div>
+        <div><label class="hs-l">WhatsApp / phone</label><input class="hs-f" id="hs-mobile" type="tel" placeholder="+91 9XXXXXXXXX"></div>
+        <div><label class="hs-l">College / institution</label><input class="hs-f" id="hs-college" placeholder="e.g. DTU, NSUT"></div>
+        <div class="hs-full"><label class="hs-l">Public GitHub repo URL *</label><input class="hs-f" id="hs-repo" type="url" required placeholder="https://github.com/you/forge2-you"></div>
+        <div class="hs-full"><label class="hs-l">Live URL (if deployed)</label><input class="hs-f" id="hs-live" type="url" placeholder="https://your-pulsedesk.vercel.app"></div>
+        <div><label class="hs-l">EastRouter models used *</label><input class="hs-f" id="hs-models" required placeholder="GLM 5.1 · DeepSeek V4 · ..."></div>
+        <div><label class="hs-l"># of sprints you ran</label><input class="hs-f" id="hs-sprints" placeholder="e.g. 3"></div>
+        <div class="hs-full"><label class="hs-l">Anything we should know to run / judge it</label><textarea class="hs-f" id="hs-notes" rows="3" placeholder="Run steps, what works, what slipped, model routing, honest notes…"></textarea></div>
+      </div>
+      <div class="callout info" style="margin:6px 0 14px"><strong>Just the repo URL — that&#39;s it.</strong> All your evidence (configs, <code>agent-log.md</code>, sprints, Slack export/screenshots, app + CI screenshots) must already be <strong>committed inside that repo</strong> at the paths in §06–§07. We don&#39;t take Google Drive, video, or any external link.</div>
+      <label class="fcg-check" style="margin-top:6px"><input type="checkbox" id="hs-consent" required style="margin-top:3px"> <span>I confirm this is my own work built during the event, my repo is public, <strong style="color:var(--paper)">all my evidence is committed inside the repo</strong>, and all model calls went through EastRouter.</span></label>
+      <button class="btn" id="hs-submit" type="submit" style="width:100%;text-align:center">Submit my Forge 2 build &rarr;</button>
+      <div id="hs-msg"></div>
+    </form>
+    <div id="hs-success" class="callout ok" style="display:none">
+      <h3 style="margin:0 0 8px;color:var(--paper)">&#9989; Submitted!</h3>
+      <p style="margin:0">We&#39;ve got your build. You can resubmit anytime while the window is open — your latest entry is the one we score. Results + feedback come to the results page and your email. Now go breathe. 🔥</p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p class="mono">Forge 2 · Edition 1 — Main Hackathon · nmg.labs · private handbook, please don&#39;t share publicly.</p>
+  </div>
+</footer>
+
+<script>
+/* ===== countdown to 6:00 PM IST today (display only — never closes the form) ===== */
+(function(){
+  var el=document.getElementById('timer'), note=document.getElementById('timer-note');
+  if(!el) return;
+  function istParts(){ var now=new Date(); var ist=new Date(now.getTime()+(now.getTimezoneOffset()*60000)+(330*60000)); return ist; }
+  function pad(n){return (n<10?'0':'')+n;}
+  function tick(){
+    var ist=istParts();
+    var end=new Date(ist); end.setHours(18,0,0,0);
+    var start=new Date(ist); start.setHours(10,30,0,0);
+    var diff, label;
+    if(ist<start){ diff=start-ist; label='STARTS IN'; }
+    else if(ist<=end){ diff=end-ist; label='TIME LEFT'; }
+    else { el.innerHTML='<div class="seg" style="min-width:auto"><b style="font-size:18px">Build window ended</b><span>submissions still open</span></div>'; return; }
+    var h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
+    el.innerHTML='<div class="seg"><b>'+pad(h)+'</b><span>'+label.split(' ')[0]+(label==='STARTS IN'?' · hrs':' hrs')+'</span></div>'+
+                 '<div class="seg"><b>'+pad(m)+'</b><span>min</span></div>'+
+                 '<div class="seg"><b>'+pad(s)+'</b><span>sec</span></div>';
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+/* ===== submission handler ===== */
+(function(){
+  var f=document.getElementById('hs-form'); if(!f) return;
+  var SUPA='https://kixladtnhbwcyvsvsqtc.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtpeGxhZHRuaGJ3Y3l2c3ZzcXRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODExMTA0NzMsImV4cCI6MjA5NjY4NjQ3M30.dUFBaxUNH-gZw6WQUoUggpNRi_0jcI4XSUHVCtx51cg';
+  var H={apikey:ANON,Authorization:'Bearer '+ANON};
+  function g(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+  f.addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=document.getElementById('hs-submit'),lbl=btn.textContent,msg=document.getElementById('hs-msg');
+    btn.disabled=true;btn.textContent='Submitting…';msg.style.display='none';
+    var row={name:g('hs-name')||null,email:(g('hs-email').toLowerCase())||null,mobile:g('hs-mobile')||null,college:g('hs-college')||null,
+      github:g('hs-repo')||null,portfolio:g('hs-live')||null,
+      sprint_choice:'Forge 2 · Edition 1 Main Hackathon (PulseDesk)',source:'forge-2-main-submission',
+      raw:{kind:'forge2-main-submission',repo:g('hs-repo'),live_url:g('hs-live'),models:g('hs-models'),sprints:g('hs-sprints'),evidence_in_repo:'yes',notes:g('hs-notes'),consent:(document.getElementById('hs-consent')||{}).checked?'Yes':'No'}};
+    fetch(SUPA+'/rest/v1/registrations',{method:'POST',headers:Object.assign({'Content-Type':'application/json',Prefer:'return=minimal'},H),body:JSON.stringify(row)})
+      .then(function(res){ if(res.status!==201) throw new Error('HTTP '+res.status); f.style.display='none'; var ok=document.getElementById('hs-success'); ok.style.display='block'; ok.scrollIntoView({behavior:'smooth',block:'center'}); })
+      .catch(function(){ msg.style.display='block'; msg.innerHTML='Something went wrong submitting. Please try again, or send your repo + live URL to a Forge captain.'; btn.disabled=false; btn.textContent=lbl; });
+  });
+})();
+</script>
+<script>
+/* ===== copy / right-click / view-source DETERRENTS =====
+   Scoped so it NEVER breaks the workflow: typing + pasting in form fields stay fully enabled,
+   buttons/links/checkbox/fetch all work. (Note: client-side only — a determined dev can still
+   bypass; the real protection is the secret URL + the follow-gate.) */
+(function(){
+  function inField(t){ return !!(t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable)); }
+  // block right-click except inside form fields (so paste-into-field still works)
+  document.addEventListener('contextmenu',function(e){ if(!inField(e.target)) e.preventDefault(); }, {capture:true});
+  // block copy/cut of page text, but allow it inside fields; PASTE is never blocked
+  document.addEventListener('copy',function(e){ if(!inField(e.target)) e.preventDefault(); }, {capture:true});
+  document.addEventListener('cut', function(e){ if(!inField(e.target)) e.preventDefault(); }, {capture:true});
+  document.addEventListener('dragstart',function(e){ e.preventDefault(); }, {capture:true});
+  // block view-source / save / devtools shortcuts (these don't affect typing or Ctrl+V)
+  document.addEventListener('keydown',function(e){
+    var k=(e.key||'').toLowerCase();
+    if(e.key==='F12'){ e.preventDefault(); return; }
+    if((e.ctrlKey||e.metaKey) && (k==='u'||k==='s')){ e.preventDefault(); return; }                 // view-source, save-page
+    if((e.ctrlKey||e.metaKey) && e.shiftKey && (k==='i'||k==='j'||k==='c')){ e.preventDefault(); }   // devtools
+  }, {capture:true});
+})();
+</script>
+</body>
+</html>
