@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,25 +9,48 @@ export default function CreateTicket() {
   const [subject, setSubject] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('medium');
+  const [requesterId, setRequesterId] = useState('');
+  const [customers, setCustomers] = useState([]);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  if (user.role !== 'customer') {
-    return <div>Only customers can create tickets.</div>;
-  }
+  useEffect(() => {
+    if (user.role !== 'customer') {
+      fetchUsers();
+    }
+  }, [user.role]);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await api.get('/users');
+      const allUsers = response.data.data || response.data;
+      setCustomers(allUsers.filter(u => u.role === 'customer'));
+    } catch (err) {
+      console.error('Failed to fetch users', err);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      const response = await api.post('/tickets', {
+      const payload = {
         subject,
         description,
         priority
-      });
-      navigate(`/tickets/${response.data.data.id}`);
+      };
+      if (user.role !== 'customer' && requesterId) {
+        payload.requester_id = parseInt(requesterId, 10);
+      }
+
+      const response = await api.post('/tickets', payload);
+      const ticketId = response.data.data?.id || response.data?.id;
+      navigate(`/tickets/${ticketId}`);
     } catch (err) {
       setError('Failed to create ticket. Please try again.');
+      setLoading(false);
     }
   };
 
@@ -43,6 +66,22 @@ export default function CreateTicket() {
             </div>
           )}
           
+          {user.role !== 'customer' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Requester (Customer)</label>
+              <select
+                className="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                value={requesterId}
+                onChange={(e) => setRequesterId(e.target.value)}
+              >
+                <option value="">Select a customer (Optional)</option>
+                {customers.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name} ({c.email})</option>
+                ))}
+              </select>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700">Subject</label>
             <input
@@ -89,9 +128,10 @@ export default function CreateTicket() {
             </button>
             <button
               type="submit"
-              className="bg-primary border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+              disabled={loading}
+              className="bg-primary border border-transparent rounded-md shadow-sm py-2 px-4 inline-flex justify-center text-sm font-medium text-white hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
             >
-              Create Ticket
+              {loading ? 'Creating...' : 'Create Ticket'}
             </button>
           </div>
         </form>

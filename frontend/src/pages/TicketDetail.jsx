@@ -11,10 +11,24 @@ export default function TicketDetail() {
   const [replyBody, setReplyBody] = useState('');
   const [isInternal, setIsInternal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [agents, setAgents] = useState([]);
 
   useEffect(() => {
     fetchTicket();
-  }, [id]);
+    if (user.role !== 'customer') {
+      fetchAgents();
+    }
+  }, [id, user.role]);
+
+  const fetchAgents = async () => {
+    try {
+      const response = await api.get('/users');
+      const allUsers = response.data.data || response.data;
+      setAgents(allUsers.filter(u => ['admin', 'agent'].includes(u.role)));
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const fetchTicket = async () => {
     try {
@@ -56,6 +70,15 @@ export default function TicketDetail() {
     }
   };
 
+  const handleAssign = async (assigneeId) => {
+    try {
+      await api.patch(`/tickets/${id}/assign`, { assignee_id: assigneeId || null });
+      setTicket({ ...ticket, assignee_id: assigneeId || null });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (!ticket) return <div>Ticket not found.</div>;
 
@@ -71,7 +94,19 @@ export default function TicketDetail() {
               Reported by {ticket.requester.name} on {new Date(ticket.created_at).toLocaleString()}
             </p>
           </div>
-          <div className="flex space-x-2 text-sm uppercase items-center">
+            <div className="flex space-x-2 text-sm uppercase items-center">
+            {user.role !== 'customer' && (
+              <select
+                className="bg-gray-100 text-gray-800 px-2 py-1 rounded font-medium border-0 focus:ring-primary mr-2"
+                value={ticket.assignee_id || ''}
+                onChange={(e) => handleAssign(e.target.value)}
+              >
+                <option value="">Unassigned</option>
+                {agents.map(a => (
+                  <option key={a.id} value={a.id}>{a.name}</option>
+                ))}
+              </select>
+            )}
             {user.role !== 'customer' ? (
               <select
                 className="bg-gray-100 text-gray-800 px-2 py-1 rounded font-medium border-0 focus:ring-primary"
@@ -129,7 +164,7 @@ export default function TicketDetail() {
         {conversations.map((conv) => (
           <div key={conv.id} className={`bg-white shadow sm:rounded-lg p-4 ${conv.is_internal ? 'border-l-4 border-yellow-400 bg-yellow-50' : ''}`}>
             <div className="flex justify-between items-center mb-2 text-sm text-gray-500">
-              <span className="font-medium text-gray-900">{conv.user.name}</span>
+              <span className="font-medium text-gray-900">{conv.author?.name || 'Unknown'}</span>
               <span>{new Date(conv.created_at).toLocaleString()}</span>
             </div>
             {conv.is_internal && <span className="text-xs font-bold text-yellow-600 uppercase mb-2 block">Internal Note</span>}
