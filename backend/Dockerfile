@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -47,6 +47,7 @@ RUN chown www-data:www-data database
 RUN echo '#!/bin/bash\n\
 php artisan migrate --force\n\
 php artisan db:seed --force\n\
+chown -R www-data:www-data database storage bootstrap/cache\n\
 apache2-foreground' > /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
