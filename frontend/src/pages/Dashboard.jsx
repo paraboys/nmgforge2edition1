@@ -11,8 +11,8 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchMetrics = async () => {
       try {
-        const response = await api.get('/dashboard/metrics');
-        setMetrics(response.data);
+        const response = await api.get('/dashboard');
+        setMetrics(response.data.data || response.data);
       } catch (error) {
         console.error('Failed to fetch metrics', error);
       } finally {

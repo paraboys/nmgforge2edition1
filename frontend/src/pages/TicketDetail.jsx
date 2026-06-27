@@ -20,10 +20,10 @@ export default function TicketDetail() {
     try {
       const [ticketRes, convRes] = await Promise.all([
         api.get(`/tickets/${id}`),
-        api.get(`/tickets/${id}/conversations`)
+        api.get(`/tickets/${id}/comments`)
       ]);
-      setTicket(ticketRes.data.data);
-      setConversations(convRes.data.data);
+      setTicket(ticketRes.data.data || ticketRes.data);
+      setConversations(convRes.data.data || convRes.data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -36,11 +36,11 @@ export default function TicketDetail() {
     if (!replyBody.trim()) return;
 
     try {
-      const response = await api.post(`/tickets/${id}/conversations`, {
+      const response = await api.post(`/tickets/${id}/comments`, {
         body: replyBody,
         is_internal: isInternal
       });
-      setConversations([response.data.data, ...conversations]);
+      setConversations([response.data.data || response.data, ...conversations]);
       setReplyBody('');
     } catch (error) {
       console.error(error);

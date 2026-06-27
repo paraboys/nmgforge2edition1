@@ -19,8 +19,8 @@ export default function Settings() {
         api.get('/users'),
         api.get('/sla-policies')
       ]);
-      setUsers(usersRes.data.data);
-      setSlaPolicies(slaRes.data.data);
+      setUsers(usersRes.data.data || usersRes.data);
+      setSlaPolicies(slaRes.data.data || slaRes.data);
     } catch (error) {
       console.error(error);
     } finally {
