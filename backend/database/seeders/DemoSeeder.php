@@ -60,8 +60,8 @@ class DemoSeeder extends Seeder
                 'organization_id' => $org->id,
                 'requester_id' => $customer->id,
                 'assignee_id' => ($i % 3 === 0) ? null : $agent->id,
-                'subject' => "Demo Ticket #{$i + 1}",
-                'description' => "This is a demo ticket description for ticket #{$i + 1}.",
+                'subject' => 'Demo Ticket #' . ($i + 1),
+                'description' => 'This is a demo ticket description for ticket #' . ($i + 1) . '.',
                 'status' => $statuses[$i % 4],
                 'priority' => $priorities[$i % 4],
                 'tags' => ['demo', 'test'],
@@ -71,7 +71,7 @@ class DemoSeeder extends Seeder
                 Comment::create([
                     'ticket_id' => $ticket->id,
                     'author_id' => ($j === 0) ? $customer->id : $agent->id,
-                    'body' => "Reply #{$j + 1} on ticket #{$i + 1}",
+                    'body' => 'Reply #' . ($j + 1) . ' on ticket #' . ($i + 1),
                     'is_internal' => ($j === 1 && $i % 2 === 0),
                 ]);
             }

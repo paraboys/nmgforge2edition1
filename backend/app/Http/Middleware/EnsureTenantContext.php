@@ -10,11 +10,11 @@ class EnsureTenantContext
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->check()) {
+        if (! $request->user()) {
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        if (empty(auth()->user()->organization_id)) {
+        if (empty($request->user()->organization_id)) {
             return response()->json(['message' => 'Forbidden.'], 403);
         }
 

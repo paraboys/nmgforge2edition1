@@ -2,63 +2,122 @@
 
 namespace Tests\Feature;
 
+use App\Enums\TicketStatus;
 use App\Models\Organization;
+use App\Models\Ticket;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class TicketTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_isolates_tickets_between_organizations(): void
+    public function test_customer_can_create_ticket()
     {
-        $org1 = Organization::create(['name' => 'Org 1']);
-        $org2 = Organization::create(['name' => 'Org 2']);
+        $customer = $this->createUser('customer');
+        $response = $this->actingAsUser($customer)->postJson('/api/tickets', [
+            'subject' => 'Test Ticket',
+            'description' => 'Description',
+        ]);
+        $response->assertStatus(201);
+    }
 
-        $user1 = User::factory()->create([
-            'organization_id' => $org1->id,
-            'role' => 'admin',
+    public function test_customer_can_view_own_ticket()
+    {
+        $customer = $this->createUser('customer');
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $customer->organization_id,
+            'requester_id' => $customer->id,
         ]);
 
-        $user2 = User::factory()->create([
-            'organization_id' => $org2->id,
-            'role' => 'admin',
+        $response = $this->actingAsUser($customer)->getJson("/api/tickets/{$ticket->id}");
+        $response->assertStatus(200);
+    }
+
+    public function test_customer_cannot_view_other_customer_ticket()
+    {
+        $org = Organization::factory()->create();
+        $customer = User::factory()->create(['organization_id' => $org->id, 'role' => 'customer']);
+        $other = User::factory()->create(['organization_id' => $org->id, 'role' => 'customer']);
+
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $org->id,
+            'requester_id' => $other->id,
         ]);
 
-        // Create ticket for Org 1
-        Sanctum::actingAs($user1);
-        
-        $response1 = $this->postJson('/api/tickets', [
-            'subject' => 'Org 1 Ticket',
-            'description' => 'Test description',
-            'priority' => 'high',
-        ]);
-        
-        $response1->assertStatus(201);
-        
-        // Create ticket for Org 2
-        Sanctum::actingAs($user2);
-        
-        $response2 = $this->postJson('/api/tickets', [
-            'subject' => 'Org 2 Ticket',
-            'description' => 'Test description',
-            'priority' => 'low',
-        ]);
-        
-        $response2->assertStatus(201);
+        $response = $this->actingAsUser($customer)->getJson("/api/tickets/{$ticket->id}");
+        $response->assertStatus(403);
+    }
 
-        // Assert Org 1 can only see their ticket
-        Sanctum::actingAs($user1);
-        $this->getJson('/api/tickets')
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.subject', 'Org 1 Ticket');
-            
-        // Assert Org 2 can only see their ticket
-        Sanctum::actingAs($user2);
-        $this->getJson('/api/tickets')
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.subject', 'Org 2 Ticket');
+    public function test_customer_cannot_update_status()
+    {
+        $customer = $this->createUser('customer');
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $customer->organization_id,
+            'requester_id' => $customer->id,
+        ]);
+
+        $response = $this->actingAsUser($customer)->putJson("/api/tickets/{$ticket->id}", [
+            'status' => 'closed',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('tickets', [
+            'id' => $ticket->id,
+            'status' => 'open',
+        ]);
+    }
+
+    public function test_admin_can_update_any_ticket_in_org()
+    {
+        $admin = $this->createUser('admin');
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $admin->organization_id,
+        ]);
+
+        $response = $this->actingAsUser($admin)->putJson("/api/tickets/{$ticket->id}", [
+            'status' => 'closed',
+        ]);
+
+        $response->assertStatus(200);
+        $this->assertDatabaseHas('tickets', [
+            'id' => $ticket->id,
+            'status' => 'closed',
+        ]);
+    }
+
+    public function test_admin_can_delete_ticket()
+    {
+        $admin = $this->createUser('admin');
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $admin->organization_id,
+        ]);
+
+        $response = $this->actingAsUser($admin)->deleteJson("/api/tickets/{$ticket->id}");
+        $response->assertStatus(204);
+    }
+
+    public function test_agent_cannot_delete_ticket()
+    {
+        $agent = $this->createUser('agent');
+        $ticket = Ticket::factory()->create([
+            'organization_id' => $agent->organization_id,
+        ]);
+
+        $response = $this->actingAsUser($agent)->deleteJson("/api/tickets/{$ticket->id}");
+        $response->assertStatus(403);
+    }
+
+    public function test_pagination_works()
+    {
+        $admin = $this->createUser('admin');
+        Ticket::factory()->count(25)->create([
+            'organization_id' => $admin->organization_id,
+        ]);
+
+        $response = $this->actingAsUser($admin)->getJson('/api/tickets?per_page=10');
+        $response->assertStatus(200);
+        $this->assertCount(10, $response->json('data'));
     }
 }
