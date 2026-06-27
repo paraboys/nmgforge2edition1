@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: pulsedesk-backend
+    env: docker
+    rootDir: backend
+    plan: free
+    envVars:
+      - key: APP_NAME
+        value: PulseDesk
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_URL
+        generateValue: true
+      - key: APP_KEY
+        generateValue: true
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: SANCTUM_STATEFUL_DOMAINS
+        value: "*.vercel.app"
+      - key: SESSION_DOMAIN
+        value: ""
