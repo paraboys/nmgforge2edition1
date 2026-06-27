@@ -22,7 +22,7 @@ export default function TicketDetail() {
         api.get(`/tickets/${id}`),
         api.get(`/tickets/${id}/conversations`)
       ]);
-      setTicket(ticketRes.data.data);
+      setTicket(ticketRes.data.data || ticketRes.data);
       setConversations(convRes.data.data);
     } catch (error) {
       console.error(error);
@@ -40,7 +40,7 @@ export default function TicketDetail() {
         body: replyBody,
         is_internal: isInternal
       });
-      setConversations([response.data.data, ...conversations]);
+      setConversations([response.data.data || response.data, ...conversations]);
       setReplyBody('');
     } catch (error) {
       console.error(error);

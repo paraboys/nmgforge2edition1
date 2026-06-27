@@ -15,7 +15,7 @@ export default function Tickets() {
   const fetchTickets = async () => {
     try {
       const response = await api.get('/tickets');
-      setTickets(response.data.data);
+      setTickets(response.data.data || response.data);
     } catch (error) {
       console.error(error);
     } finally {
