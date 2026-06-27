@@ -14,6 +14,8 @@ class DashboardService
 
         if ($user->isCustomer()) {
             $query->where('requester_id', $user->id);
+        } else {
+            $query->where('organization_id', $user->organization_id);
         }
 
         return [

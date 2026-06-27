@@ -34,31 +34,56 @@ class TicketController extends Controller
 
         $ticket = $this->ticketService->create($request->validated(), $request->user());
 
-        return new TicketResource($ticket);
+        return (new TicketResource($ticket))->response()->setStatusCode(201);
     }
 
-    public function show(Ticket $ticket)
+    public function show(int $id)
     {
+        $ticket = Ticket::withoutGlobalScopes()->find($id);
+
+        if (! $ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
         $this->authorize('view', $ticket);
+
         return new TicketResource($ticket->load(['requester', 'assignee', 'comments.author']));
     }
 
-    public function update(UpdateTicketRequest $request, Ticket $ticket)
+    public function update(UpdateTicketRequest $request, int $id)
     {
+        $ticket = Ticket::withoutGlobalScopes()->find($id);
+
+        if (! $ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
         $this->authorize('update', $ticket);
         $ticket = $this->ticketService->update($ticket, $request->validated(), $request->user());
         return new TicketResource($ticket);
     }
 
-    public function destroy(Ticket $ticket)
+    public function destroy(int $id)
     {
+        $ticket = Ticket::withoutGlobalScopes()->find($id);
+
+        if (! $ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
         $this->authorize('delete', $ticket);
         $ticket->delete();
         return response()->noContent();
     }
 
-    public function assign(Request $request, Ticket $ticket)
+    public function assign(Request $request, int $id)
     {
+        $ticket = Ticket::withoutGlobalScopes()->find($id);
+
+        if (! $ticket) {
+            return response()->json(['message' => 'Ticket not found'], 404);
+        }
+
         $this->authorize('assign', $ticket);
         $request->validate(['assignee_id' => 'nullable|integer|exists:users,id']);
         $ticket = $this->ticketService->assign($ticket, $request->assignee_id, $request->user());
