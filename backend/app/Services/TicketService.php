@@ -74,7 +74,7 @@ class TicketService
 
     public function getTicketsForUser(User $user, array $filters)
     {
-        $query = Ticket::query()->filter($filters);
+        $query = Ticket::query()->with(['requester', 'assignee'])->filter($filters);
 
         if ($user->isCustomer()) {
             $query->where('requester_id', $user->id);
